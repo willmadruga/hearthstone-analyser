@@ -25,7 +25,7 @@ public class Application {
 
             jsonImporter.importData(cardsRepo, mechanicsRepo);
 
-            jsonImporter.validateData(cardsRepo);
+            //jsonImporter.validateData(cardsRepo);
 
         };
 

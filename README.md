@@ -18,7 +18,3 @@
 
 * Writing tests
 * Code review
-
-### Who do I talk to? ###
-
-* William Madruga - willmadruga@gmail.com

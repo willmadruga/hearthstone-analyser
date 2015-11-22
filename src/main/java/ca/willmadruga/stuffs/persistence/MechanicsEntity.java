@@ -6,15 +6,19 @@ import java.util.List;
 /**
  * Created by wmad on 2015-11-21.
  */
-public class Mechanics {
+@Entity
+public class MechanicsEntity {
 
     private Long id;
 
     private String mechanic;
 
-    private List<Cards> cards;
+    private List<CardEntity> cards;
 
-    public Mechanics(final String mechanic) {
+    public MechanicsEntity() {
+    }
+
+    public MechanicsEntity(final String mechanic) {
         this.mechanic = mechanic;
     }
 
@@ -38,11 +42,11 @@ public class Mechanics {
     }
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "mechanics")
-    public List<Cards> getCards() {
+    public List<CardEntity> getCards() {
         return cards;
     }
 
-    public void setCards(List<Cards> cards) {
+    public void setCards(List<CardEntity> cards) {
         this.cards = cards;
     }
 

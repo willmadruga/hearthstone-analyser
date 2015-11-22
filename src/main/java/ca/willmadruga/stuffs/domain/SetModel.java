@@ -12,7 +12,7 @@ public class SetModel {
     @JsonProperty(value = "Set")
     private String setName;
 
-    @JsonProperty(value = "Cards")
+    @JsonProperty(value = "CardEntity")
     private List<CardModel> list;
 
     public List<CardModel> getList() {

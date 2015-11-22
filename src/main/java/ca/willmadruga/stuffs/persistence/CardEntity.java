@@ -1,17 +1,17 @@
 package ca.willmadruga.stuffs.persistence;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created by wmad on 2015-11-21.
  */
-public class Cards {
+@Entity
+public class CardEntity {
 
     private Long id;
 
-    private List<Mechanics> mechanics;
+    private String cardIdentifier;
 
     private String name;
 
@@ -51,6 +51,8 @@ public class Cards {
 
     private String howToGetGold;
 
+    private Set<MechanicsEntity> mechanics;
+
     @Id
     @GeneratedValue
     @Column(name = "card_id")
@@ -64,21 +66,24 @@ public class Cards {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "card_mechanics", joinColumns = {
-            @JoinColumn(name = "card_id", nullable = false, updatable = false)
+            @JoinColumn(name = "card_id", nullable = false, updatable = true)
     }, inverseJoinColumns = {
             @JoinColumn(name = "mechanics_id", nullable = false, updatable = false)
     })
-    public List<Mechanics> getMechanics() {
-
-        if (mechanics == null) {
-            mechanics = new ArrayList<>();
-        }
-
+    public Set<MechanicsEntity> getMechanics() {
         return mechanics;
     }
 
-    public void setMechanics(List<Mechanics> mechanics) {
+    public void setMechanics(Set<MechanicsEntity> mechanics) {
         this.mechanics = mechanics;
+    }
+
+    public String getCardIdentifier() {
+        return cardIdentifier;
+    }
+
+    public void setCardIdentifier(String cardIdentifier) {
+        this.cardIdentifier = cardIdentifier;
     }
 
     public String getName() {

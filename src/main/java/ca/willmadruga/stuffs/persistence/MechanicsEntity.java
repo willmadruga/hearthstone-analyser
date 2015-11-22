@@ -7,6 +7,7 @@ import java.util.List;
  * Created by wmad on 2015-11-21.
  */
 @Entity
+@Table(name = "MECHANICS")
 public class MechanicsEntity {
 
     private Long id;

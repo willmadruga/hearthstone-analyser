@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -27,40 +28,14 @@ import java.util.List;
 public class JsonImporter {
 
     private static final Logger log = LoggerFactory.getLogger(JsonImporter.class);
+    private static final String DATA_DIRECTORY = "data/";
+    private static final String JSON_FILENAME = "AllSets.json";
 
-    /**
-     * Temporary method. Roughly validates imported data...
-     */
-    public void validateData(final CardsRepo cardsRepo) {
-        final List<CardEntity> dbCards = cardsRepo.findAll();
+    @Autowired
+    private CardsRepo cardsRepo;
 
-        for (CardEntity dbCard : dbCards) {
-            log.info(dbCard.getSetName());
-            log.info(dbCard.getCardIdentifier());
-            for (MechanicsEntity mechanics : dbCard.getMechanics()) {
-                log.info(mechanics.getMechanic());
-            }
-
-        }
-    }
-
-    /**
-     * Import data from Json.
-     */
-    public void importData(final CardsRepo cardsRepo, final MechanicsRepo mechanicsRepo) throws IOException {
-        final ObjectMapper mapper = new ObjectMapper();
-        final File jsonFile = new File("AllSets.json");
-
-        final List<SetModel> setModelList = process(mapper, jsonFile);
-
-        for (final SetModel setModel : setModelList) {
-
-            final List<CardEntity> setCards = processCards(setModel, cardsRepo, mechanicsRepo);
-            cardsRepo.save(setCards);
-            log.info("Saved cards for {}", setModel.getSetName());
-
-        }
-    }
+    @Autowired
+    private MechanicsRepo mechanicsRepo;
 
     private List<CardEntity> processCards(final SetModel setModel, final CardsRepo cardsRepo, final MechanicsRepo mechanicsRepo) {
 
@@ -102,6 +77,24 @@ public class JsonImporter {
 
 
         return cards;
+    }
+
+    /**
+     * Import data from Json.
+     */
+    public void importData() throws IOException {
+        final ObjectMapper mapper = new ObjectMapper();
+        final File jsonFile = new File(DATA_DIRECTORY + JSON_FILENAME);
+
+        final List<SetModel> setModelList = process(mapper, jsonFile);
+
+        for (final SetModel setModel : setModelList) {
+
+            final List<CardEntity> setCards = processCards(setModel, cardsRepo, mechanicsRepo);
+            cardsRepo.save(setCards);
+            log.info("Saved cards for {}", setModel.getSetName());
+
+        }
     }
 
     private void processCardMechanics(MechanicsRepo mechanicsRepo, CardModel cardModel, CardEntity card) {

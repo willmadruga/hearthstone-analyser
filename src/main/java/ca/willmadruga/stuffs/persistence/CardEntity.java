@@ -7,6 +7,7 @@ import java.util.Set;
  * Created by wmad on 2015-11-21.
  */
 @Entity
+@Table(name = "CARDS")
 public class CardEntity {
 
     private Long id;
@@ -65,7 +66,7 @@ public class CardEntity {
     }
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "card_mechanics", joinColumns = {
+    @JoinTable(name = "CARD_MECHANICS", joinColumns = {
             @JoinColumn(name = "card_id", nullable = false, updatable = true)
     }, inverseJoinColumns = {
             @JoinColumn(name = "mechanics_id", nullable = false, updatable = false)

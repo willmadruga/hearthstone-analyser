@@ -18,20 +18,19 @@ public class VaadinUI extends UI {
     @Autowired
     private CardsDataGridPanel dataGrid;
 
+
     @Override
     protected void init(VaadinRequest request) {
 
-        final HorizontalLayout mainLayout = new HorizontalLayout();
+        final VerticalLayout contentCenter = new VerticalLayout();
+        contentCenter.setSizeFull();
+        contentCenter.addComponent(dataGrid);
 
+        final HorizontalLayout mainLayout = new HorizontalLayout();
+        mainLayout.addComponent(contentCenter);
         mainLayout.setSizeFull();
         mainLayout.setMargin(true);
 
-        final VerticalLayout contentCenter = new VerticalLayout();
-        contentCenter.setSizeFull();
-
-        mainLayout.addComponent(contentCenter);
-
-        contentCenter.addComponent(dataGrid);
 
         setContent(mainLayout);
 

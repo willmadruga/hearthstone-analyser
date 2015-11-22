@@ -1,12 +1,11 @@
 package ca.willmadruga.stuffs;
 
 import ca.willmadruga.stuffs.helpers.JsonImporter;
-import ca.willmadruga.stuffs.persistence.Repos.CardsRepo;
-import ca.willmadruga.stuffs.persistence.Repos.MechanicsRepo;
+import org.h2.server.web.WebServlet;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
@@ -20,16 +19,10 @@ public class Application {
     }
 
     @Bean
-    public CommandLineRunner loadData(final CardsRepo cardsRepo, final MechanicsRepo mechanicsRepo) {
-        return (args) -> {
-
-            jsonImporter.importData(cardsRepo, mechanicsRepo);
-
-            //jsonImporter.validateData(cardsRepo);
-
-        };
-
+    public ServletRegistrationBean h2servletRegistration() {
+        ServletRegistrationBean registration = new ServletRegistrationBean(new WebServlet());
+        registration.addUrlMappings("/console/*");
+        return registration;
     }
-
 
 }

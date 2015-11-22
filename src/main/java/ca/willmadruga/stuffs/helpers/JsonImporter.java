@@ -57,6 +57,7 @@ public class JsonImporter {
 
             final List<CardEntity> setCards = processCards(setModel, cardsRepo, mechanicsRepo);
             cardsRepo.save(setCards);
+            log.info("Saved cards for {}", setModel.getSetName());
 
         }
     }
@@ -66,7 +67,7 @@ public class JsonImporter {
         final List<CardEntity> cards = new ArrayList<>();
         for (final CardModel cardModel : setModel.getList()) {
 
-            CardEntity card = cardsRepo.findCardsByCardIdentifier(cardModel.getId());
+            CardEntity card = cardsRepo.findByCardIdentifier(cardModel.getId());
 
             if (card == null) {
                 card = new CardEntity();
@@ -128,7 +129,7 @@ public class JsonImporter {
         final Iterator<String> fieldNames = node.fieldNames();
         while (fieldNames.hasNext()) {
 
-            final String fieldName = (String) fieldNames.next();
+            final String fieldName = fieldNames.next();
             final List<JsonNode> cards = node.findValues(fieldName);
             final SetModel setModel = new SetModel();
 

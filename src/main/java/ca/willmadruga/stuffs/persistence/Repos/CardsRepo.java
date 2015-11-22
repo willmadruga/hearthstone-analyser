@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface CardsRepo extends JpaRepository<CardEntity, Long> {
 
-    CardEntity findCardsByCardIdentifier(final String cardIdentifier);
+    CardEntity findByCardIdentifier(final String cardIdentifier);
 
 }

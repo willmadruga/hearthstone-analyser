@@ -2,6 +2,7 @@ package ca.willmadruga.stuffs.ui;
 
 import ca.willmadruga.stuffs.persistence.CardEntity;
 import ca.willmadruga.stuffs.persistence.Repos.CardsRepo;
+import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
@@ -22,14 +23,23 @@ public class CardsDataGridPanel extends VerticalLayout {
     public CardsDataGridPanel(final CardsRepo cardsRepo) {
         this.cardsRepo = cardsRepo;
 
-        final Grid cardsGrid = new Grid();
-        cardsGrid.setSizeFull();
-        cardsGrid.setColumnReorderingAllowed(true);
-        cardsGrid.setResponsive(true);
-        cardsGrid.setContainerDataSource(new BeanItemContainer(CardEntity.class, cardsRepo.findAll()));
-
-        addComponent(cardsGrid);
+        final Grid grid = createGrid(cardsRepo);
+        addComponent(grid);
         setSizeFull();
+    }
+
+    private Grid createGrid(CardsRepo cardsRepo) {
+        final Grid grid = new Grid();
+        grid.setSizeFull();
+        grid.setColumnReorderingAllowed(true);
+        grid.setResponsive(true);
+
+        final BeanItemContainer dataSource = new BeanItemContainer(CardEntity.class, cardsRepo.findAll());
+        grid.setContainerDataSource(dataSource);
+        grid.setColumns("setName", "cardIdentifier", "name", "type", "cost", "attack", "health");
+        grid.setColumnOrder("setName");
+        
+        return grid;
     }
 
 }

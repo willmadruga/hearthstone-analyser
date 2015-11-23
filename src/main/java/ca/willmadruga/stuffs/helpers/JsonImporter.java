@@ -1,19 +1,5 @@
-package ca.willmadruga.stuffs.helpers;
 
-import ca.willmadruga.stuffs.domain.CardModel;
-import ca.willmadruga.stuffs.domain.SetModel;
-import ca.willmadruga.stuffs.persistence.CardEntity;
-import ca.willmadruga.stuffs.persistence.MechanicsEntity;
-import ca.willmadruga.stuffs.persistence.Repos.CardsRepo;
-import ca.willmadruga.stuffs.persistence.Repos.MechanicsRepo;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+package ca.willmadruga.stuffs.helpers;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +8,24 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import ca.willmadruga.stuffs.domain.CardModel;
+import ca.willmadruga.stuffs.domain.SetModel;
+import ca.willmadruga.stuffs.persistence.CardEntity;
+import ca.willmadruga.stuffs.persistence.MechanicsEntity;
+import ca.willmadruga.stuffs.persistence.Repos.CardsRepo;
+import ca.willmadruga.stuffs.persistence.Repos.MechanicsRepo;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 /**
  * Created by wmad on 2015-11-21.
  */
@@ -29,8 +33,12 @@ import java.util.List;
 public class JsonImporter {
 
     private static final Logger log = LoggerFactory.getLogger(JsonImporter.class);
-    private static final String DATA_DIRECTORY = "data/";
-    private static final String JSON_FILENAME = "AllSets.json";
+
+    @Value("${importer.json.directory}")
+    private String directory;
+
+    @Value("${importer.json.filename}")
+    private String filename;
 
     @Autowired
     private CardsRepo cardsRepo;
@@ -38,7 +46,7 @@ public class JsonImporter {
     @Autowired
     private MechanicsRepo mechanicsRepo;
 
-    private List<CardEntity> processCards(final SetModel setModel, final CardsRepo cardsRepo, final MechanicsRepo mechanicsRepo) {
+    private List<CardEntity> createCards(final SetModel setModel) {
 
         final List<CardEntity> cards = new ArrayList<>();
         for (final CardModel cardModel : setModel.getList()) {
@@ -77,11 +85,10 @@ public class JsonImporter {
             card.setHowToGetGold(cardModel.getHowToGetGold());
 
             // Process card mechanics
-            processCardMechanics(mechanicsRepo, cardModel, card);
+            createCardMechanics(cardModel, card);
 
             cards.add(card);
         }
-
 
         return cards;
     }
@@ -91,22 +98,22 @@ public class JsonImporter {
      */
     public void importData() throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
-        final File jsonFile = new File(DATA_DIRECTORY + JSON_FILENAME);
+        final File jsonFile = new File(directory + filename);
 
-        final List<SetModel> setModelList = process(mapper, jsonFile);
+        final List<SetModel> setModelList = processJson(mapper, jsonFile);
 
         for (final SetModel setModel : setModelList) {
 
-            final List<CardEntity> setCards = processCards(setModel, cardsRepo, mechanicsRepo);
+            final List<CardEntity> setCards = createCards(setModel);
             cardsRepo.save(setCards);
             log.info("Saved cards for {}", setModel.getSetName());
 
         }
     }
 
-    private void processCardMechanics(MechanicsRepo mechanicsRepo, CardModel cardModel, CardEntity card) {
+    private void createCardMechanics(CardModel cardModel, CardEntity card) {
         if (cardModel.getMechanics() != null) {
-            card.setMechanics(new HashSet<>());
+            card.setMechanics(new HashSet<MechanicsEntity>());
             for (final String mechanics : cardModel.getMechanics()) {
 
                 // check for existence and create new if not found.
@@ -120,7 +127,7 @@ public class JsonImporter {
         }
     }
 
-    private List<SetModel> process(final ObjectMapper mapper, final File jsonFile) throws IOException {
+    private List<SetModel> processJson(final ObjectMapper mapper, final File jsonFile) throws IOException {
 
         final List<SetModel> setModelList = new ArrayList<>();
 
@@ -134,7 +141,7 @@ public class JsonImporter {
             final SetModel setModel = new SetModel();
 
             setModel.setSetName(fieldName);
-            setModel.setList(new ArrayList<>());
+            setModel.setList(new ArrayList<CardModel>());
 
             for (final JsonNode content : cards) {
                 final Iterator cardIterator = content.elements();

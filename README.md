@@ -23,4 +23,4 @@
 * Code review
 
 ### Other info ###
-* Json can be found here: [https://hearthstonejson.com/]
+* Json can be found here: https://hearthstonejson.com/

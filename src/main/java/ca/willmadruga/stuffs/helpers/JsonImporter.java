@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +59,13 @@ public class JsonImporter {
             card.setAttack(cardModel.getAttack());
             card.setHealth(cardModel.getHealth());
             card.setDurability(cardModel.getDurability());
-            card.setText(cardModel.getText());
+
+            if (!StringUtils.isEmpty(cardModel.getText())) {
+                card.setText(cardModel.getText().replace("$", "").replace("#", ""));
+            } else {
+                card.setText(cardModel.getText());
+            }
+
             card.setElite(cardModel.getElite());
             card.setInPlayText(cardModel.getInPlayText());
             card.setFlavor(cardModel.getFlavor());

@@ -63,7 +63,7 @@ public class CardsDataGridPanel extends VerticalLayout {
 
         final BeanItemContainer dataSource = new BeanItemContainer(CardEntity.class, cardsRepo.findAll());
         grid.setContainerDataSource(dataSource);
-        grid.setColumns("setName", "cardIdentifier", "name", "type", "cost", "attack", "health");
+        grid.setColumns("setName", "cardIdentifier", "name", "type", "cost", "attack", "health", "text");
         grid.setColumnOrder("setName");
 
         return grid;

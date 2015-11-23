@@ -7,7 +7,7 @@
 
 ### How do I get set up? ###
 
-* git clone https://willmadruga@bitbucket.org/willmadruga/hearthstone-analyser.git
+* git clone https://USERNAME@bitbucket.org/willmadruga/hearthstone-analyser.git
 * cd hearthstone-analyser
 * mvn package
 * mkdir target/data
@@ -21,3 +21,6 @@
 
 * Writing tests
 * Code review
+
+### Other info ###
+* Json can be found here: [https://hearthstonejson.com/]

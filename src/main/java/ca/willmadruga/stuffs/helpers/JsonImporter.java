@@ -105,7 +105,7 @@ public class JsonImporter {
         for (final SetModel setModel : setModelList) {
 
             final List<CardEntity> setCards = createCards(setModel);
-            cardsRepo.save(setCards);
+            cardsRepo.save(setCards); //there is no merge... (look for a proper interface to extend from.)
             log.info("Saved cards for {}", setModel.getSetName());
 
         }
